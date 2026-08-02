@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 33% 97%;        /* أبيض ورقي #FAF8F5 */
+    --foreground: 210 53% 11%;       /* كحلي #0D1B2A */
+    --card: 0 0% 100%;
+    --card-foreground: 210 53% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 53% 11%;
+    --primary: 356 78% 56%;          /* أحمر الإشارة #E63946 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 36 20% 93%;
+    --secondary-foreground: 210 53% 11%;
+    --muted: 36 16% 92%;
+    --muted-foreground: 217 16% 55%;
+    --accent: 36 20% 93%;
+    --accent-foreground: 210 53% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 36 14% 87%;
+    --input: 36 14% 87%;
+    --ring: 356 78% 56%;
+    --radius: 6px;
+  }
+
+  .dark {
+    --background: 210 53% 11%;       /* كحلي منتصف الليل #0D1B2A */
+    --foreground: 210 40% 96%;
+    --card: 212 47% 16%;             /* سطح #16283C */
+    --card-foreground: 210 40% 96%;
+    --popover: 212 47% 16%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 355 100% 65%;         /* أحمر أفتح على الداكن #FF4D5E */
+    --primary-foreground: 210 53% 11%;
+    --secondary: 212 40% 21%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 212 40% 21%;
+    --muted-foreground: 217 16% 62%; /* رمادي حجري #8D99AE */
+    --accent: 212 40% 21%;
+    --accent-foreground: 210 40% 96%;
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 212 35% 24%;
+    --input: 212 35% 24%;
+    --ring: 355 100% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    @apply font-headline;
+  }
+  ::selection {
+    background: hsl(var(--primary));
+    color: #fff;
+  }
+}
+
+/* خط فاصل تحريري مزدوج */
+.rule-double {
+  border-top: 3px solid hsl(var(--foreground));
+  position: relative;
+}
+.rule-double::after {
+  content: "";
+  display: block;
+  border-top: 1px solid hsl(var(--foreground));
+  margin-top: 2px;
+}
+
+/* أغلفة المقالات المرسومة بالكود — خارج @layer حتى لا تُحذف عند البناء */
+.cover-red    { background: linear-gradient(135deg, #8f1d2c 0%, #E63946 55%, #ff7a5c 100%); }
+.cover-navy   { background: linear-gradient(135deg, #0D1B2A 0%, #16395e 60%, #2e6ea8 100%); }
+.cover-gold   { background: linear-gradient(135deg, #6e5410 0%, #C9A227 60%, #ecd26a 100%); }
+.cover-teal   { background: linear-gradient(135deg, #0b3b3f 0%, #12837a 60%, #3ed0b2 100%); }
+.cover-plum   { background: linear-gradient(135deg, #3b1245 0%, #7c2d8e 60%, #c86bd8 100%); }
+
+.cover-pattern {
+  background-image: radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
