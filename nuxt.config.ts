@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     defaultLocale: "ar",
   },
 
-  // يطابق سلوك الثيم في نسخة React: صنف .dark على <html> ومفتاح ajal-theme
+  // صنف .dark على <html> ومفتاح تخزين ajal-theme (يحفظ تفضيل القرّاء الحاليين)
   colorMode: {
     classSuffix: "",
     storageKey: "ajal-theme",

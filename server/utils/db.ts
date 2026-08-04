@@ -5,14 +5,11 @@ import * as schema from "../../db/schema";
 import * as relations from "../../db/relations";
 
 /**
- * طبقة الاتصال بقاعدة البيانات — نسخة Nitro من `api/queries/connection.ts`.
+ * طبقة الاتصال بقاعدة البيانات.
  *
- * الفروق المقصودة عن الأصل:
- *  1. قراءة `DATABASE_URL` عبر `useRuntimeConfig()` (أسلوب Nitro) بدل `api/lib/env.ts`.
- *  2. رفع خطأ مُصنَّف عند غياب الإعداد بدل محاولة اتصال محكوم عليها بالفشل بعد ثوانٍ.
- *
- * ما بقي حرفياً: نفس السائق (`drizzle-orm/mysql2`)، نفس `mode: "planetscale"`،
- * نفس المخطط الكامل (schema + relations)، ونفس نمط المثيل الكسول المُعاد استعماله.
+ *  - `DATABASE_URL` تُقرأ عبر `useRuntimeConfig()` مع ارتداد إلى `process.env`.
+ *  - غياب الإعداد يرفع خطأً مُصنَّفاً فوراً بدل محاولة اتصال محكوم عليها بالفشل.
+ *  - مثيل Drizzle كسول واحد لكل عملية (pool مُعاد استعماله عبر الطلبات).
  */
 
 const fullSchema = { ...schema, ...relations };

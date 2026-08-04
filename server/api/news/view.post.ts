@@ -5,7 +5,6 @@ import { articles } from "../../../db/schema";
 const bodySchema = z.object({ id: z.coerce.number().int() });
 
 // ─── عدّاد المشاهدات ───────────────────────────
-// منقول من api/newsRouter.ts (news.view) — كان طفرة tRPC، صار POST
 export default defineEventHandler(async (event) => {
   const parsed = bodySchema.safeParse(await readBody(event));
   if (!parsed.success) {

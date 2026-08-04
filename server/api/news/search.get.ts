@@ -7,7 +7,6 @@ const querySchema = z.object({
 });
 
 // ─── بحث ───────────────────────────────────────
-// منقول من api/newsRouter.ts (news.search)
 export default defineEventHandler(async (event) => {
   const parsed = querySchema.safeParse(getQuery(event));
   if (!parsed.success) {

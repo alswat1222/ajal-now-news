@@ -8,7 +8,6 @@ const querySchema = z.object({
 });
 
 // ─── مقال واحد حسب القسم والـ slug ─────────────
-// منقول من api/newsRouter.ts (news.article)
 export default defineEventHandler(async (event) => {
   const parsed = querySchema.safeParse(getQuery(event));
   if (!parsed.success) {

@@ -2,7 +2,6 @@ import { and, desc, eq } from "drizzle-orm";
 import { articles } from "../../../db/schema";
 
 // ─── بيانات الصفحة الرئيسية دفعة واحدة ─────────
-// منقول من api/newsRouter.ts (news.home) بنفس الاستعلامات والحدود
 export default defineEventHandler(async (event) => {
   setHeader(event, "Cache-Control", "public, max-age=30, s-maxage=60, stale-while-revalidate=120");
 

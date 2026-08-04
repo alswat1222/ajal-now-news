@@ -8,7 +8,6 @@ const querySchema = z.object({
 });
 
 // ─── مقالات ذات صلة ────────────────────────────
-// منقول من api/newsRouter.ts (news.related)
 export default defineEventHandler(async (event) => {
   const parsed = querySchema.safeParse(getQuery(event));
   if (!parsed.success) {

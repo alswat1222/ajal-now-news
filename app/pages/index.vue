@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { data, status, error } = await useFetch("/api/news/home");
 
-// الصفحة الرئيسية تحتفظ بالعنوان الكامل بلا قالب — كما في نسخة React
+// الصفحة الرئيسية تحتفظ بالعنوان الكامل بلا قالب
 useHead({ titleTemplate: null });
 useSeoMeta({
   title: "عاجل الآن | الخبر لحظة بلحظة",

@@ -1,6 +1,6 @@
 # هوية «عاجل الآن» — المرجع المعتمد
 
-مُستخرَج من نسخة React قبل إعادة البناء على Nuxt. هذا المستند هو **مصدر الحقيقة** للهوية البصرية والصياغة.
+هذا المستند هو **مصدر الحقيقة** للهوية البصرية والصياغة.
 
 ---
 
@@ -97,7 +97,7 @@
 
 ---
 
-## 6. التنسيق العربي (منقول حرفياً)
+## 6. التنسيق العربي
 
 ```ts
 // التاريخ: Intl.DateTimeFormat("ar", { weekday:"long", day:"numeric", month:"long", year:"numeric" })
@@ -110,7 +110,7 @@
 
 ---
 
-## 7. بنية الصفحات والمكوّنات (للنقل)
+## 7. بنية الصفحات والمكوّنات
 
 **المسارات:** `/` · `/search` · `/:category` · `/:category/:slug` · 404
 
@@ -118,8 +118,4 @@
 الرأس ثلاث طبقات: شريط علوي (التاريخ + الشعار النصي) · صف الشعار والأدوات (بحث + تبديل الثيم) · شريط الأقسام الأفقي بمؤشر سفلي أحمر للقسم النشط.
 العرض الأقصى `max-w-7xl` للرأس والتذييل، و`max-w-3xl` لصفحة المقال.
 
-**المكوّنات (11):** ArticleCard · BreakingTicker · CategoryBlock · Cover · Footer · Header · HeroSection · Logo · MostRead · ShareButtons
-**مكوّنات UI المستعملة فعلاً (10 من 53):** button · dialog · input · label · separator · sheet · skeleton · textarea · toggle · tooltip
-
-> الكود المرجعي الكامل لنسخة React محفوظ في فرع `main` — استرجاع أي ملف:
-> `git show main:src/components/<الاسم>.tsx`
+**المكوّنات (`app/components/`):** AppHeader · AppFooter · Logo · Cover · ArticleCard · BreakingTicker · CategoryBlock · HeroSection · MostRead · ShareButtons · Skeleton

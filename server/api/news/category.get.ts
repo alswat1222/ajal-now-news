@@ -9,7 +9,6 @@ const querySchema = z.object({
 });
 
 // ─── مقالات قسم معين ───────────────────────────
-// منقول من api/newsRouter.ts (news.byCategory)
 export default defineEventHandler(async (event) => {
   const parsed = querySchema.safeParse(getQuery(event));
   if (!parsed.success) {
