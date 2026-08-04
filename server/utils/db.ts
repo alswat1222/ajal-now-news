@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2";
 import type { H3Event } from "h3";
 import * as schema from "../../db/schema";
 import * as relations from "../../db/relations";
@@ -52,10 +53,21 @@ export function getDb(event?: H3Event): AppDatabase {
         "DATABASE_URL is not configured (runtimeConfig.databaseUrl / process.env.DATABASE_URL)",
       );
     }
-    // نفس استدعاء الأصل حرفياً: drizzle(<connection string>, { mode, schema })
     // ملاحظة مُتحقَّق منها: صيغة `drizzle({ connection: { uri, ... } })` معطوبة في
     // drizzle-orm 0.45 مع mysql2 (client.query is not a function) — لا تستعملها.
-    instance = drizzle(url, { mode: "planetscale", schema: fullSchema });
+    //
+    // نُنشئ الـ pool صراحةً بدل تمرير السلسلة، لسبب واحد حاسم:
+    // drizzle يفترض أن قيم `timestamp` العائدة من MySQL بتوقيت UTC دائماً،
+    // لكن MySQL يعرضها بتوقيت الجلسة. فإن كان الخادم على +03 مثلاً
+    // عادت كل التواريخ مُزاحة ثلاث ساعات — يفسد ترتيب الأخبار العاجلة
+    // و publication_date في خريطة Google News و datePublished في NewsArticle.
+    // إجبار كل اتصال على UTC يجعل افتراض drizzle صحيحاً مهما كان توقيت الخادم.
+    const pool = mysql.createPool(url);
+    pool.on("connection", (conn) => {
+      conn.query("SET time_zone = '+00:00'");
+    });
+
+    instance = drizzle(pool, { mode: "planetscale", schema: fullSchema });
   }
   return instance;
 }

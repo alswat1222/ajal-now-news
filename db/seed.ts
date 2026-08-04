@@ -1,10 +1,21 @@
-import { getDb } from "../api/queries/connection";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2";
 import { authors, categories, articles, tags, articleTags } from "./schema";
+import * as schema from "./schema";
+import * as relations from "./relations";
+
+// اتصال مستقل — السكربت يعمل خارج سياق Nitro فلا useRuntimeConfig هنا.
+// إجبار UTC لنفس سبب server/utils/db.ts: drizzle يفترض أن timestamp بتوقيت UTC.
+const url = process.env.DATABASE_URL ?? process.env.NUXT_DATABASE_URL ?? "";
+if (!url) throw new Error("DATABASE_URL مطلوب لتشغيل البذر");
+
+const pool = mysql.createPool(url);
+pool.on("connection", (c) => c.query("SET time_zone = '+00:00'"));
+const db = drizzle(pool, { mode: "planetscale", schema: { ...schema, ...relations } });
 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000);
 
 async function seed() {
-  const db = getDb();
   console.log("Seeding database...");
 
   // ─── الكتّاب ─────────────────────────────────

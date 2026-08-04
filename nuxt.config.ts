@@ -56,6 +56,23 @@ export default defineNuxtConfig({
     disallow: ["/api/"],
   },
 
+  sitemap: {
+    // خرائط منفصلة: الصفحات الثابتة · المقالات والأقسام · خريطة Google News
+    sitemaps: {
+      pages: {
+        includeAppSources: true,
+        // صفحة البحث noindex — لا معنى لإدراجها
+        exclude: ["/search", "/**/[category]/**"],
+      },
+      articles: {
+        sources: ["/api/__sitemap__/articles"],
+      },
+      news: {
+        sources: ["/api/__sitemap__/news"],
+      },
+    },
+  },
+
   nitro: {
     preset: "node-server",
   },
