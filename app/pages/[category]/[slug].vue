@@ -172,7 +172,8 @@ onMounted(() => {
             rel="noopener nofollow"
             class="font-bold text-brand-red hover:underline dark:text-brand-red-dark"
           >{{ a.sourceName || "المصدر الأصلي" }}</a>.
-          <span v-if="a.aiModel">أُعدّت الصياغة بمساعدة الذكاء الاصطناعي وروجعت تحريرياً.</span>
+          <!-- إفصاح دقيق: لا يُدّعى وجود مراجعة بشرية ما لم تحدث فعلاً -->
+          <span v-if="a.aiModel">أُعدّت الصياغة آلياً بمساعدة الذكاء الاصطناعي.</span>
         </p>
       </aside>
 
