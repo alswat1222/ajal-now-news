@@ -95,6 +95,11 @@ export default defineNuxtConfig({
     databaseUrl: "",
     appId: "",
     appSecret: "",
+    public: {
+      // مُعرّف ناشر AdSense. إفراغه (NUXT_PUBLIC_ADSENSE_CLIENT=) يوقف الإعلانات
+      // كلياً في تلك البيئة. لا تُعرض في التطوير مهما كانت قيمته.
+      adsenseClient: "ca-pub-3335862771619351",
+    },
   },
 
   typescript: {

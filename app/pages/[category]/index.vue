@@ -50,9 +50,13 @@ useSchemaOrg([
       <p class="mt-2 text-sm text-muted-foreground">{{ data!.total }} مقالاً في هذا القسم</p>
     </header>
 
+    <AdSlot :slot-id="AD_SLOTS.top" format="horizontal" min-height="100px" />
+
     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
       <ArticleCard v-for="a in data!.articles" :key="a.id" :article="a" />
     </div>
+
+    <AdSlot :slot-id="AD_SLOTS.inFeed" min-height="280px" />
 
     <div v-if="hasMore" class="mt-12 text-center">
       <button

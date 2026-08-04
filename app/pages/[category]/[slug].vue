@@ -34,6 +34,16 @@ const paragraphs = computed(() => a.value.content.split(/\n\n+/));
 const lede = computed(() => paragraphs.value[0] ?? "");
 const body = computed(() => paragraphs.value.slice(1));
 
+// شطر المتن لإقحام وحدة إعلانية وسطه. الجزء الثاني يعود فارغاً في المقالات
+// القصيرة، فيُعرض المتن متصلاً بلا إعلان داخلي.
+const bodyParts = computed(() => splitForAd(a.value.contentHtml));
+
+// المسار النصّي (مقال بلا HTML مولَّد) يُشطر بالمثل عند الفقرة الوسطى،
+// بشرط أربع فقرات فأكثر حتى يبقى بعد الإعلان محتوى معتبر.
+const textCut = computed(() => (body.value.length >= 4 ? Math.ceil(body.value.length / 2) : 0));
+const textLead = computed(() => (textCut.value ? body.value.slice(0, textCut.value) : body.value));
+const textRest = computed(() => (textCut.value ? body.value.slice(textCut.value) : []));
+
 // يعمل على الخادم والعميل — بديل window.location.href الذي ينهار في SSR
 const url = useRequestURL();
 const canonical = computed(() => `${url.origin}/${a.value.category.slug}/${a.value.slug}`);
@@ -146,8 +156,15 @@ onMounted(() => {
 
       <!-- المتن -->
       <!-- المحتوى المولَّد: HTML مُعقَّم على الخادم (marked + DOMPurify) -->
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <div v-if="a.contentHtml" class="article-body mt-8" v-html="a.contentHtml" />
+      <template v-if="a.contentHtml">
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="article-body mt-8" v-html="bodyParts[0]" />
+        <template v-if="bodyParts[1]">
+          <AdSlot :slot-id="AD_SLOTS.inArticle" min-height="280px" />
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <div class="article-body article-body--cont" v-html="bodyParts[1]" />
+        </template>
+      </template>
       <div v-else class="mt-8">
         <p
           class="font-headline text-lg font-semibold leading-[1.9] text-foreground md:text-xl md:leading-[1.9]"
@@ -155,8 +172,14 @@ onMounted(() => {
           {{ lede }}
         </p>
         <div class="mt-6 space-y-6 text-[17px] leading-[2] text-foreground/85">
-          <p v-for="(p, i) in body" :key="i">{{ p }}</p>
+          <p v-for="(p, i) in textLead" :key="i">{{ p }}</p>
         </div>
+        <template v-if="textRest.length">
+          <AdSlot :slot-id="AD_SLOTS.inArticle" min-height="280px" />
+          <div class="space-y-6 text-[17px] leading-[2] text-foreground/85">
+            <p v-for="(p, i) in textRest" :key="i">{{ p }}</p>
+          </div>
+        </template>
       </div>
 
 
@@ -175,6 +198,8 @@ onMounted(() => {
         <ShareButtons :url="canonical" :title="a.title" />
       </div>
     </article>
+
+    <AdSlot :slot-id="AD_SLOTS.end" min-height="280px" />
 
     <!-- مقالات ذات صلة -->
     <aside v-if="related.length" class="mt-14" aria-label="مقالات ذات صلة">

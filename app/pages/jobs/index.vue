@@ -29,6 +29,8 @@ useSchemaOrg([
       </p>
     </header>
 
+    <AdSlot v-if="list.length" :slot-id="AD_SLOTS.top" format="horizontal" min-height="100px" />
+
     <p v-if="error" class="mt-10 text-muted-foreground">تعذّر جلب الوظائف مؤقتاً. حدّث الصفحة بعد قليل.</p>
 
     <div v-else-if="!list.length" class="mt-16 text-center">
@@ -88,5 +90,7 @@ useSchemaOrg([
         </NuxtLink>
       </li>
     </ul>
+
+    <AdSlot v-if="list.length" :slot-id="AD_SLOTS.inFeed" min-height="280px" />
   </main>
 </template>

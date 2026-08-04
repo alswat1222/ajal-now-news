@@ -37,6 +37,10 @@ useSeoMeta({
     <BreakingTicker :items="data.breaking" />
     <HeroSection :articles="data.hero" />
 
+    <div class="mx-auto max-w-7xl px-4">
+      <AdSlot :slot-id="AD_SLOTS.top" format="horizontal" min-height="100px" />
+    </div>
+
     <main class="mx-auto max-w-7xl px-4">
       <!-- آخر الأخبار + الأكثر قراءة -->
       <div class="grid gap-10 py-8 lg:grid-cols-3">
@@ -46,8 +50,13 @@ useSeoMeta({
             <ArticleCard v-for="a in data.latest" :key="a.id" :article="a" />
           </div>
         </section>
-        <MostRead :items="data.mostRead" />
+        <div>
+          <MostRead :items="data.mostRead" />
+          <AdSlot :slot-id="AD_SLOTS.sidebar" min-height="250px" />
+        </div>
       </div>
+
+      <AdSlot :slot-id="AD_SLOTS.inFeed" min-height="280px" />
 
       <!-- الأقسام -->
       <CategoryBlock v-for="c in data.categories" :key="c.id" :category="c" />

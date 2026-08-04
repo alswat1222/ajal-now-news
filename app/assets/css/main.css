@@ -92,6 +92,8 @@
 .article-body { @apply text-[17px] leading-[2] text-foreground/85; }
 .article-body > p { @apply mb-6; }
 .article-body > p:first-child { @apply font-headline text-lg font-semibold leading-[1.9] text-foreground md:text-xl md:leading-[1.9]; }
+/* تكملة المتن بعد الإعلان الداخلي — ليست مطلعاً، فيُلغى تنسيق الفقرة الافتتاحية */
+.article-body--cont > p:first-child { @apply font-body text-[17px] font-normal leading-[2] text-foreground/85 md:text-[17px] md:leading-[2]; }
 .article-body h2 { @apply mb-4 mt-10 font-headline text-2xl font-extrabold text-foreground; }
 .article-body h3 { @apply mb-3 mt-8 font-headline text-xl font-bold text-foreground; }
 .article-body ul { @apply mb-6 list-disc space-y-2 ps-6; }
