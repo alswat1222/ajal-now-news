@@ -1,5 +1,5 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
-import { articles, articleTags, categories, sources, tags } from "../../db/schema";
+import { articles, articleTags, authors, categories, sources, tags } from "../../db/schema";
 import type { AppDatabase } from "./db";
 
 /**
@@ -96,10 +96,21 @@ export async function ingestSource(db: AppDatabase, sourceId: number): Promise<I
 
   stats.fetched = items.length;
 
-  // كاتب افتراضي للمحتوى المُولَّد — يُفترض وجود كاتب واحد على الأقل
-  const firstAuthor = await db.query.authors.findFirst({ columns: { id: true } });
-  if (!firstAuthor) {
-    stats.errors.push("لا يوجد كاتب في قاعدة البيانات");
+  // كاتب المحتوى المُولَّد: «فريق التحرير» لا صحفي باسمه.
+  // نسبة نصّ آلي إلى شخص باسم صريح ادعاء غير صحيح عن مؤلّف المادة.
+  const BYLINE = "فريق التحرير";
+  let byline = await db.query.authors.findFirst({ where: eq(authors.name, BYLINE), columns: { id: true } });
+  if (!byline) {
+    await db.insert(authors).values({
+      name: BYLINE,
+      role: "تحرير عاجل الآن",
+      initials: "عآ",
+      bio: "مواد يُعدّها فريق «عاجل الآن» بالاستناد إلى تقارير الوكالات والمصادر الإخبارية.",
+    });
+    byline = await db.query.authors.findFirst({ where: eq(authors.name, BYLINE), columns: { id: true } });
+  }
+  if (!byline) {
+    stats.errors.push("تعذّر تجهيز كاتب المحتوى المُولَّد");
     return stats;
   }
 
@@ -155,7 +166,7 @@ export async function ingestSource(db: AppDatabase, sourceId: number): Promise<I
       imageUrl: useImage ? item.imageUrl : null,
       imageAlt: useImage ? trimAtWord(a.alt_text, 130) : null,
       imageCredit: useImage ? src.name.slice(0, 300) : null,
-      authorId: firstAuthor.id,
+      authorId: byline.id,
       categoryId: catId,
     });
 

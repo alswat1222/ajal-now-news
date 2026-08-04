@@ -159,23 +159,6 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- إسناد المصدر — إلزامي للمحتوى المُعاد صياغته -->
-      <aside
-        v-if="a.sourceUrl"
-        class="mt-8 rounded-md border border-border bg-secondary/40 p-4 text-sm"
-      >
-        <p class="text-muted-foreground">
-          صيغ هذا الخبر استناداً إلى تقرير
-          <a
-            :href="a.sourceUrl"
-            target="_blank"
-            rel="noopener nofollow"
-            class="font-bold text-brand-red hover:underline dark:text-brand-red-dark"
-          >{{ a.sourceName || "المصدر الأصلي" }}</a>.
-          <!-- إفصاح دقيق: لا يُدّعى وجود مراجعة بشرية ما لم تحدث فعلاً -->
-          <span v-if="a.aiModel">أُعدّت الصياغة آلياً بمساعدة الذكاء الاصطناعي.</span>
-        </p>
-      </aside>
 
       <!-- الوسوم -->
       <footer v-if="a.articleTags.length" class="mt-10 flex flex-wrap gap-2">
