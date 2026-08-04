@@ -81,6 +81,12 @@ function toggleTheme() {
         >
           {{ c.name }}
         </NuxtLink>
+        <NuxtLink
+          to="/jobs"
+          :class="[NAV_BASE, route.path.startsWith('/jobs') ? NAV_ACTIVE : NAV_IDLE]"
+        >
+          وظائف
+        </NuxtLink>
       </div>
     </nav>
   </header>

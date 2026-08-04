@@ -76,6 +76,9 @@ export default defineNuxtConfig({
       news: {
         sources: ["/api/__sitemap__/news"],
       },
+      jobs: {
+        sources: ["/api/__sitemap__/jobs"],
+      },
     },
   },
 

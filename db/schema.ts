@@ -104,6 +104,64 @@ export const articles = mysqlTable(
   ],
 );
 
+// ─── الوظائف ────────────────────────────────────
+// جدول مستقل لا امتداد للمقالات: JobPosting يفرض حقولاً (جهة التوظيف،
+// الموقع، تاريخ الانتهاء) لا معنى لها في المقال، وGoogle يزيل الإعلان
+// من نتائج الوظائف إن نقص أيٌّ منها أو انتهت صلاحيته.
+export const jobs = mysqlTable(
+  "jobs",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    // وصف المهام والمتطلبات بصيغة Markdown
+    description: text("description").notNull(),
+    excerpt: varchar("excerpt", { length: 500 }).notNull(),
+
+    // ── جهة التوظيف (hiringOrganization) ──
+    companyName: varchar("company_name", { length: 200 }).notNull(),
+    companyUrl: varchar("company_url", { length: 500 }),
+    companyLogo: varchar("company_logo", { length: 500 }),
+
+    // ── الموقع (jobLocation / jobLocationType) ──
+    isRemote: boolean("is_remote").notNull().default(false),
+    city: varchar("city", { length: 120 }),
+    region: varchar("region", { length: 120 }),
+    country: varchar("country", { length: 2 }).notNull().default("SA"),
+
+    // ── التفاصيل ──
+    employmentType: mysqlEnum("employment_type", [
+      "FULL_TIME", "PART_TIME", "CONTRACTOR", "TEMPORARY", "INTERN", "VOLUNTEER", "PER_DIEM", "OTHER",
+    ]).notNull().default("FULL_TIME"),
+    // الراتب اختياري لكنه يرفع ظهور الإعلان في نتائج الوظائف
+    salaryMin: int("salary_min"),
+    salaryMax: int("salary_max"),
+    salaryCurrency: varchar("salary_currency", { length: 3 }).notNull().default("SAR"),
+    salaryUnit: mysqlEnum("salary_unit", ["HOUR", "DAY", "WEEK", "MONTH", "YEAR"])
+      .notNull().default("MONTH"),
+    experienceMonths: int("experience_months"),
+    field: varchar("field", { length: 100 }),
+
+    // ── التقديم ──
+    applyUrl: varchar("apply_url", { length: 1000 }),
+    applyEmail: varchar("apply_email", { length: 255 }),
+
+    // ── الإدارة ──
+    status: mysqlEnum("status", ["draft", "published", "expired"]).notNull().default("draft"),
+    postedAt: timestamp("posted_at"),
+    // إلزامي: Google يزيل الإعلانات منتهية الصلاحية ويعاقب على إبقائها
+    validThrough: timestamp("valid_through").notNull(),
+    viewsCount: int("views_count").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+  },
+  (t) => [
+    index("jobs_status_posted_idx").on(t.status, t.postedAt),
+    index("jobs_valid_idx").on(t.status, t.validThrough),
+    index("jobs_field_idx").on(t.field),
+  ],
+);
+
 // ─── الوسوم (المحاور) ───────────────────────────
 // طبقة التصنيف الثانية — عابرة للأقسام. «الذكاء الاصطناعي» قد يظهر في تقنية واقتصاد معاً.
 export const tags = mysqlTable("tags", {
@@ -121,6 +179,7 @@ export const articleTags = mysqlTable("article_tags", {
 
 // ─── الأنواع المستنتجة ─────────────────────────
 export type Source = typeof sources.$inferSelect;
+export type Job = typeof jobs.$inferSelect;
 export type Author = typeof authors.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Article = typeof articles.$inferSelect;

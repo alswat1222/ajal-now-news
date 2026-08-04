@@ -221,13 +221,23 @@ export function trimAtWord(text: string, max: number): string {
   return out.replace(/[\s،,:؛;\-—«»"'(]+$/u, "");
 }
 
-/** ينظّف الـslug: ASCII، حروف صغيرة، شرطات فقط */
+/**
+ * ينظّف الـslug مع **الحفاظ على العربية**.
+ *
+ * الترميز السداسي للعربية يُنتج روابط مشوّهة بلا معنى
+ * (`مهندس-برمجيات` ← `D985D987D986D8AF...`). المتصفحات ومحرّكات
+ * البحث تتعامل مع UTF-8 في المسار بلا مشكلة، والرابط العربي المقروء
+ * أفضل لـ SEO العربي من ترميز لا يقرؤه أحد.
+ */
 export function normalizeSlug(input: string): string {
   const s = input
     .toLowerCase()
+    // \p{L} يشمل العربية — تُحفظ كما هي، وتُستبدل الفواصل والرموز بشرطة
     .replace(/[^\p{L}\p{N}]+/gu, "-")
+    // إزالة التشكيل والتطويل — يُغيّران الرابط دون أن يُرى أثرهما
+    .replace(/[ً-ْـ]/g, "")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 100);
-  // إن بقيت حروف غير لاتينية، نستبدلها بترميز آمن للمسار
-  return /^[a-z0-9-]+$/.test(s) ? s : encodeURIComponent(s).replace(/%/g, "").slice(0, 100);
+    .slice(0, 100)
+    .replace(/-+$/g, "");
+  return s || "item";
 }
