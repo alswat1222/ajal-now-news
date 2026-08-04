@@ -1,0 +1,4 @@
+# ads.txt — إقرار البائعين المعتمدين (IAB Authorized Digital Sellers)
+# يُخدَم على https://ajel-now.net/ads.txt — لا تنقله إلى مسار فرعي.
+# غيابه أو خطأ فيه يمنع المزايدين من الشراء ويُسقط عائد المخزون.
+google.com, pub-3335862771619351, DIRECT, f08c47fec0942fa0

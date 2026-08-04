@@ -158,6 +158,10 @@ useSchemaOrg([
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-if="j.descriptionHtml" class="article-body mt-8" v-html="j.descriptionHtml" />
 
+    <!-- الوحدة قبل كتلة التقديم لا داخلها: إعلان ملاصق لزر التقديم يورّث
+         نقرات عرضية، وهي مخالفة صريحة لسياسة AdSense -->
+    <AdSlot v-if="j.descriptionHtml" :slot-id="AD_SLOTS.inArticle" min-height="280px" />
+
     <div v-if="j.applyUrl || j.applyEmail" class="mt-10 border-t border-border pt-8">
       <h2 class="font-headline text-xl font-extrabold">التقديم</h2>
       <div class="mt-4 flex flex-wrap gap-3">
@@ -183,5 +187,7 @@ useSchemaOrg([
         لا تدفع أي مبلغ مقابل التقديم، ولا ترسل بيانات بنكية أو مستندات هوية قبل التحقّق من الجهة.
       </p>
     </div>
+
+    <AdSlot :slot-id="AD_SLOTS.end" min-height="280px" />
   </main>
 </template>
