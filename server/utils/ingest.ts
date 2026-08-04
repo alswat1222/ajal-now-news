@@ -136,9 +136,10 @@ export async function ingestSource(db: AppDatabase, sourceId: number): Promise<I
     const useImage = src.allowSourceImages && item.imageUrl;
 
     await db.insert(articles).values({
-      title: a.title.slice(0, 500),
+      // القصّ عند حدّ الكلمة — slice الحرفي يفسد العربية
+      title: trimAtWord(a.title, 70),
       slug,
-      excerpt: a.meta_description.slice(0, 1000),
+      excerpt: trimAtWord(a.meta_description, 160),
       content: toMarkdown(a),
       isMarkdown: true,
       cover: coverFor(slug),
@@ -152,7 +153,7 @@ export async function ingestSource(db: AppDatabase, sourceId: number): Promise<I
       sourceName: src.name,
       sourceRaw: item.raw.slice(0, 60_000),
       imageUrl: useImage ? item.imageUrl : null,
-      imageAlt: useImage ? a.alt_text.slice(0, 300) : null,
+      imageAlt: useImage ? trimAtWord(a.alt_text, 130) : null,
       imageCredit: useImage ? src.name.slice(0, 300) : null,
       authorId: firstAuthor.id,
       categoryId: catId,

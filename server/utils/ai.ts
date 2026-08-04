@@ -40,20 +40,21 @@ const NEWS_SCHEMA = {
       maxLength: 100,
       description: "URL slug in English, lowercase, hyphen-separated. ASCII only.",
     },
+    // ⚠️ لا maxLength على الحقول النصية العربية عمداً.
+    // الحد الصارم في المخطّط يقصّ على مستوى **الحرف** فينتج كلمات فاسدة:
+    // «الإعلام» + «سمي» ← «الإعلامسمي» · «غير نظامية» ← «غيرظامة».
+    // الطول يُفرَض بالتعليمات ويُقصّ في الكود عند حدّ الكلمة لا الحرف.
     title: {
       type: "string",
-      maxLength: 60,
-      description: "The main headline (H1) in Arabic.",
+      description: "The main headline (H1) in Arabic. MUST be a complete sentence under 60 characters.",
     },
     meta_description: {
       type: "string",
-      maxLength: 155,
-      description: "Meta description for SEO in Arabic, one engaging sentence.",
+      description: "Meta description for SEO in Arabic, one complete engaging sentence under 155 characters.",
     },
     alt_text: {
       type: "string",
-      maxLength: 120,
-      description: "Alternative text for the featured image in Arabic, including the primary keyword.",
+      description: "Alternative text for the featured image in Arabic, complete phrase under 120 characters.",
     },
     tags: {
       type: "array",
@@ -203,6 +204,21 @@ export function toMarkdown(a: AiArticle): string {
     parts.push(s.content.trim());
   }
   return parts.filter(Boolean).join("\n\n");
+}
+
+/**
+ * قصّ عند حدّ الكلمة لا الحرف.
+ * القصّ الحرفي في العربية يلصق بقايا الكلمات ببعضها فينتج نصاً فاسداً،
+ * وهو ما كان يفعله maxLength في مخطّط JSON.
+ */
+export function trimAtWord(text: string, max: number): string {
+  const t = text.trim().replace(/\s+/g, " ");
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max + 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  const out = (lastSpace > max * 0.5 ? cut.slice(0, lastSpace) : t.slice(0, max)).trim();
+  // إزالة علامات ترقيم معلّقة في النهاية بعد القصّ
+  return out.replace(/[\s،,:؛;\-—«»"'(]+$/u, "");
 }
 
 /** ينظّف الـslug: ASCII، حروف صغيرة، شرطات فقط */
