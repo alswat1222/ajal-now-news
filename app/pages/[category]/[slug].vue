@@ -145,7 +145,10 @@ onMounted(() => {
       />
 
       <!-- المتن -->
-      <div class="mt-8">
+      <!-- المحتوى المولَّد: HTML مُعقَّم على الخادم (marked + DOMPurify) -->
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div v-if="a.contentHtml" class="article-body mt-8" v-html="a.contentHtml" />
+      <div v-else class="mt-8">
         <p
           class="font-headline text-lg font-semibold leading-[1.9] text-foreground md:text-xl md:leading-[1.9]"
         >
@@ -155,6 +158,23 @@ onMounted(() => {
           <p v-for="(p, i) in body" :key="i">{{ p }}</p>
         </div>
       </div>
+
+      <!-- إسناد المصدر — إلزامي للمحتوى المُعاد صياغته -->
+      <aside
+        v-if="a.sourceUrl"
+        class="mt-8 rounded-md border border-border bg-secondary/40 p-4 text-sm"
+      >
+        <p class="text-muted-foreground">
+          صيغ هذا الخبر استناداً إلى تقرير
+          <a
+            :href="a.sourceUrl"
+            target="_blank"
+            rel="noopener nofollow"
+            class="font-bold text-brand-red hover:underline dark:text-brand-red-dark"
+          >{{ a.sourceName || "المصدر الأصلي" }}</a>.
+          <span v-if="a.aiModel">أُعدّت الصياغة بمساعدة الذكاء الاصطناعي وروجعت تحريرياً.</span>
+        </p>
+      </aside>
 
       <!-- الوسوم -->
       <footer v-if="a.articleTags.length" class="mt-10 flex flex-wrap gap-2">

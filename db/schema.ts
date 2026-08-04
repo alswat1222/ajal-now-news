@@ -22,12 +22,38 @@ export const authors = mysqlTable("authors", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// ─── التصنيفات ──────────────────────────────────
+// ─── الأقسام ────────────────────────────────────
+// مسطّحة عمداً: كل قسم = مسار من مستوى واحد /{slug}. التفريع الموضوعي يتم بالوسوم.
 export const categories = mysqlTable("categories", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
   description: varchar("description", { length: 500 }),
+  // ترتيب العرض في شريط التنقّل — تحكّم تحريري بلا اعتماد على ترتيب الإدخال
+  sortOrder: int("sort_order").notNull().default(100),
+  // هوية بصرية للقسم: مفتاح التدرّج (red | navy | gold | teal | plum)
+  cover: varchar("cover", { length: 20 }).notNull().default("navy"),
+  // إخفاء قسم من التنقّل دون حذفه
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+// ─── مصادر التغذية (RSS) ────────────────────────
+export const sources = mysqlTable("sources", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 200 }).notNull(),
+  // 500 حرفاً وليس 1000: الفهرس الفريد مع utf8mb4 يحسب 4 بايت للحرف،
+  // وحد MySQL للمفتاح 3072 بايت — أي 768 حرفاً كحد أقصى.
+  feedUrl: varchar("feed_url", { length: 500 }).notNull().unique(),
+  siteUrl: varchar("site_url", { length: 1000 }),
+  // القسم الافتراضي إن تعذّر على النموذج التصنيف
+  defaultCategoryId: bigint("default_category_id", { mode: "number", unsigned: true }),
+  isActive: boolean("is_active").notNull().default(true),
+  // ⚠️ إعادة نشر صور المصدر قد تنتهك حقوق الناشر — يُفعَّل لكل مصدر على حدة
+  // وبمسؤولية المالك بعد التأكد من الترخيص.
+  allowSourceImages: boolean("allow_source_images").notNull().default(false),
+  lastFetchedAt: timestamp("last_fetched_at"),
+  lastError: varchar("last_error", { length: 500 }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 // ─── المقالات ───────────────────────────────────
@@ -41,7 +67,24 @@ export const articles = mysqlTable(
     content: text("content").notNull(),
     // غلاف مرسوم بالكود: مفتاح تدرّج لوني (red | navy | gold | teal | plum)
     cover: varchar("cover", { length: 20 }).notNull().default("navy"),
-    status: mysqlEnum("status", ["draft", "published"]).notNull().default("draft"),
+    // draft = بانتظار مراجعة بشرية · review = مُراجَع ومعتمد · published = منشور
+    status: mysqlEnum("status", ["draft", "review", "published"]).notNull().default("draft"),
+
+    // ── حقول خط الأتمتة ──
+    // المحتوى بصيغة Markdown حين يأتي من النموذج
+    isMarkdown: boolean("is_markdown").notNull().default(false),
+    // النموذج المُولِّد — فارغ يعني تحريراً بشرياً
+    aiModel: varchar("ai_model", { length: 100 }),
+    sourceId: bigint("source_id", { mode: "number", unsigned: true }),
+    // معرّف المُدخَل في التغذية — يمنع التكرار
+    sourceGuid: varchar("source_guid", { length: 500 }),
+    sourceUrl: varchar("source_url", { length: 1000 }),
+    sourceName: varchar("source_name", { length: 200 }),
+    // النص الخام كما ورد — للمراجعة والتدقيق ومقارنة ما أضافه النموذج
+    sourceRaw: text("source_raw"),
+    imageUrl: varchar("image_url", { length: 1000 }),
+    imageAlt: varchar("image_alt", { length: 300 }),
+    imageCredit: varchar("image_credit", { length: 300 }),
     isBreaking: boolean("is_breaking").notNull().default(false),
     isFeatured: boolean("is_featured").notNull().default(false),
     viewsCount: int("views_count").notNull().default(0),
@@ -55,14 +98,19 @@ export const articles = mysqlTable(
     uniqueIndex("slug_category_idx").on(t.slug, t.categoryId),
     index("status_published_idx").on(t.status, t.publishedAt),
     index("breaking_idx").on(t.isBreaking, t.publishedAt),
+    // حارس التكرار: نفس المُدخَل من نفس التغذية لا يُبتلع مرتين
+    uniqueIndex("source_guid_idx").on(t.sourceGuid),
+    index("review_queue_idx").on(t.status, t.createdAt),
   ],
 );
 
-// ─── الوسوم ─────────────────────────────────────
+// ─── الوسوم (المحاور) ───────────────────────────
+// طبقة التصنيف الثانية — عابرة للأقسام. «الذكاء الاصطناعي» قد يظهر في تقنية واقتصاد معاً.
 export const tags = mysqlTable("tags", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
+  description: varchar("description", { length: 300 }),
 });
 
 export const articleTags = mysqlTable("article_tags", {
@@ -72,6 +120,7 @@ export const articleTags = mysqlTable("article_tags", {
 });
 
 // ─── الأنواع المستنتجة ─────────────────────────
+export type Source = typeof sources.$inferSelect;
 export type Author = typeof authors.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Article = typeof articles.$inferSelect;

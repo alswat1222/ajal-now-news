@@ -1,5 +1,5 @@
-import { and, desc, eq } from "drizzle-orm";
-import { articles } from "../../../db/schema";
+import { and, asc, desc, eq } from "drizzle-orm";
+import { articles, categories } from "../../../db/schema";
 
 // ─── بيانات الصفحة الرئيسية دفعة واحدة ─────────
 export default defineEventHandler(async (event) => {
@@ -26,6 +26,8 @@ export default defineEventHandler(async (event) => {
         with: articleWith,
       }),
       db.query.categories.findMany({
+        where: eq(categories.isActive, true),
+        orderBy: [asc(categories.sortOrder), asc(categories.id)],
         with: {
           articles: {
             where: published,

@@ -22,6 +22,10 @@ export default defineNuxtConfig({
     description:
       "عاجل الآن — الخبر لحظة بلحظة: أخبار عاجلة وتحليلات معمقة في السياسة والاقتصاد والتقنية والرياضة والثقافة.",
     defaultLocale: "ar",
+    // ⚠️ الفهرسة مُعطّلة افتراضياً لحماية سمعة النطاق ما دام المحتوى تجريبياً.
+    // فهرسة محتوى نموذجي على نطاق أخبار تُضعف ثقة محرّكات البحث ويصعب التعافي منها.
+    // ارفع العلم بعد إدخال محتوى تحريري حقيقي: NUXT_SITE_INDEXABLE=true
+    indexable: process.env.NUXT_SITE_INDEXABLE === "true",
   },
 
   // صنف .dark على <html> ومفتاح تخزين ajal-theme (يحفظ تفضيل القرّاء الحاليين)
@@ -47,8 +51,10 @@ export default defineNuxtConfig({
   // استضافة ذاتية للخطوط بدل رابط Google Fonts الحاجب للعرض
   fonts: {
     families: [
+      // العناوين: Readex Pro — حديث وأنيق، تناسبات عربية ممتازة ووزن متغيّر
+      { name: "Readex Pro", provider: "google", weights: [400, 500, 600, 700] },
+      // المتن: IBM Plex Sans Arabic — قراءة مريحة للنصوص الطويلة
       { name: "IBM Plex Sans Arabic", provider: "google", weights: [300, 400, 500, 600, 700] },
-      { name: "Tajawal", provider: "google", weights: [400, 500, 700] },
     ],
   },
 
@@ -75,6 +81,11 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: "node-server",
+    experimental: { tasks: true },
+    // جلب التغذيات كل ساعة — المخرَج مسوّدات بانتظار المراجعة لا منشورات
+    scheduledTasks: {
+      "0 * * * *": ["ingest"],
+    },
   },
 
   runtimeConfig: {

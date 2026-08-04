@@ -42,7 +42,7 @@ withDefaults(
       </span>
       <span
         v-if="!compact"
-        class="mt-1 text-[11px] font-medium tracking-wide"
+        class="mt-1 text-[11px] font-medium"
         :class="variant === 'light' ? 'text-white/60' : 'text-muted-foreground'"
       >
         الخبر لحظة بلحظة

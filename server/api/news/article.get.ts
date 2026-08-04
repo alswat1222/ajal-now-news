@@ -39,5 +39,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Not Found", message: "المقال غير موجود" });
   }
 
-  return article;
+  // المحتوى المولَّد يُخزَّن Markdown — يُحوَّل ويُعقَّم على الخادم
+  // فلا تصل حزمة marked/DOMPurify إلى المتصفح ولا يُعرض HTML غير معقَّم.
+  return {
+    ...article,
+    contentHtml: article.isMarkdown ? renderMarkdown(article.content) : null,
+  };
 });

@@ -88,6 +88,22 @@
 .cover-teal   { background: linear-gradient(135deg, #0b3b3f 0%, #12837a 60%, #3ed0b2 100%); }
 .cover-plum   { background: linear-gradient(135deg, #3b1245 0%, #7c2d8e 60%, #c86bd8 100%); }
 
+/* متن المقال المُولَّد (HTML معقَّم من Markdown) */
+.article-body { @apply text-[17px] leading-[2] text-foreground/85; }
+.article-body > p { @apply mb-6; }
+.article-body > p:first-child { @apply font-headline text-lg font-semibold leading-[1.9] text-foreground md:text-xl md:leading-[1.9]; }
+.article-body h2 { @apply mb-4 mt-10 font-headline text-2xl font-extrabold text-foreground; }
+.article-body h3 { @apply mb-3 mt-8 font-headline text-xl font-bold text-foreground; }
+.article-body ul { @apply mb-6 list-disc space-y-2 ps-6; }
+.article-body ol { @apply mb-6 list-decimal space-y-2 ps-6; }
+.article-body strong { @apply font-bold text-foreground; }
+.article-body a { @apply font-semibold text-brand-red underline underline-offset-4 dark:text-brand-red-dark; }
+.article-body blockquote { @apply my-6 border-s-4 border-brand-red ps-4 italic text-foreground/75 dark:border-brand-red-dark; }
+.article-body hr { @apply my-8 border-border; }
+.article-body table { @apply mb-6 w-full border-collapse text-sm; }
+.article-body th, .article-body td { @apply border border-border px-3 py-2 text-start; }
+.article-body th { @apply bg-secondary font-bold; }
+
 .cover-pattern {
   background-image: radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px);
   background-size: 14px 14px;

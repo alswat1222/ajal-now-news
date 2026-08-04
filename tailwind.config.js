@@ -57,8 +57,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        headline: ['"IBM Plex Sans Arabic"', "Tahoma", "sans-serif"],
-        body: ["Tajawal", '"IBM Plex Sans Arabic"', "Tahoma", "sans-serif"],
+        headline: ['"Readex Pro"', '"IBM Plex Sans Arabic"', "Tahoma", "sans-serif"],
+        body: ['"IBM Plex Sans Arabic"', '"Readex Pro"', "Tahoma", "sans-serif"],
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",

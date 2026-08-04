@@ -53,7 +53,7 @@ const rest = computed(() => props.articles.slice(1));
       <!-- القصص الثانوية — قائمة مرقّمة تحريرية -->
       <div class="lg:col-span-2">
         <h2
-          class="rule-double pt-2 font-headline text-sm font-bold uppercase tracking-wide text-muted-foreground"
+          class="rule-double pt-2 font-headline text-sm font-bold text-muted-foreground"
         >
           في الواجهة
         </h2>

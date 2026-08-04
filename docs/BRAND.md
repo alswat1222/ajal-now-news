@@ -66,10 +66,14 @@
 
 | الدور | العائلة | الأوزان |
 |---|---|---|
-| `font-headline` | IBM Plex Sans Arabic → Tahoma → sans-serif | 300 400 500 600 700 |
-| `font-body` | Tajawal → IBM Plex Sans Arabic → Tahoma | 400 500 700 |
+| `font-headline` | Readex Pro → IBM Plex Sans Arabic → Tahoma | 400 500 600 700 |
+| `font-body` | IBM Plex Sans Arabic → Readex Pro → Tahoma | 300 400 500 600 700 |
 
 العناوين `h1..h4` تأخذ `font-headline` تلقائياً؛ الـ `body` يأخذ `font-body`.
+الخطوط **مستضافة ذاتياً** عبر `@nuxt/fonts` — لا طلب خارجي حاجب للعرض.
+
+⚠️ **قاعدة طباعة عربية:** لا تستعمل `tracking-*` (letter-spacing) على نص عربي إطلاقاً —
+يفصل الحروف المتصلة ويكسر شكل الكلمة. تُترك المسافات للخط نفسه.
 
 ---
 
